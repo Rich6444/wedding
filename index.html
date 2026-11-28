@@ -91,6 +91,38 @@ h2{font-size:clamp(2.8rem,9vw,4.2rem);text-align:center;margin-bottom:2.5rem}
 .btn:hover{background:var(--black);color:var(--white);transform:translateY(-2px)}
 .btn.solid{background:var(--black);color:var(--white)}
 
+/* Gifts */
+.giftwrap{margin-top:2.5rem;opacity:0}
+.in .giftwrap{animation:fade .8s ease 1.2s forwards}
+a.btn{display:inline-block;text-decoration:none}
+.gifts{background:var(--soft)}
+.gift-intro{max-width:560px;margin:0 auto 2.5rem;text-align:center}
+.glist{max-width:720px;margin:0 auto;list-style:none;padding:0;border-bottom:1px solid rgba(0,0,0,.2)}
+.glist li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 1.5rem;padding:1.3rem 0;border-top:1px solid rgba(0,0,0,.2)}
+.glist h3{font-family:var(--sans);font-size:1.1rem;font-weight:500}
+.glist p{font-size:.95rem;color:var(--grey)}
+.glist .link{margin:0;white-space:nowrap}
+
+/* Gift button hover effect */
+.giftbtn{position:relative;overflow:hidden;padding:1rem 2.8rem;letter-spacing:.12em;
+  transition:letter-spacing .45s cubic-bezier(.2,.8,.2,1),transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.giftbtn span{position:relative;display:inline-block}
+.giftbtn::before{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg)}
+.giftbtn span::before,.giftbtn span::after{content:"\2726";position:absolute;top:50%;font-size:.8em;opacity:0;
+  transform:translateY(-50%) scale(.2) rotate(-120deg);transition:opacity .35s,transform .5s cubic-bezier(.2,.9,.3,1.4)}
+.giftbtn span::before{left:-1.7rem}
+.giftbtn span::after{right:-1.7rem}
+@media(hover:hover){
+  .giftbtn:hover,.giftbtn:focus-visible{background:var(--black);color:var(--white);letter-spacing:.2em;transform:translateY(-3px);
+    box-shadow:0 14px 34px rgba(0,0,0,.3),0 0 0 4px rgba(0,0,0,.08)}
+  .giftbtn:hover::before,.giftbtn:focus-visible::before{animation:shine .9s ease}
+  .giftbtn:hover span::before,.giftbtn:hover span::after,
+  .giftbtn:focus-visible span::before,.giftbtn:focus-visible span::after{opacity:1;transform:translateY(-50%) scale(1) rotate(0)}
+}
+.giftbtn:active{transform:translateY(0) scale(.98)}
+@keyframes shine{to{left:140%}}
+
 /* Timeline */
 .tl{position:relative;margin:0 auto;max-width:560px;padding-left:2rem}
 .tl::before{content:"";position:absolute;left:.45rem;top:.4rem;bottom:.4rem;width:1px;background:var(--black);opacity:.3}
@@ -159,6 +191,7 @@ footer{text-align:center;padding:3rem 1.5rem;font-family:var(--script);font-size
     <div><b id="cm">0</b><small>minutes</small></div>
     <div><b id="cs">0</b><small>seconds</small></div>
   </div>
+  <p class="giftwrap"><a class="btn solid giftbtn" href="#gifts"><span>Gift Requests</span></a></p>
 </header>
 
 <section class="details" id="details">
@@ -188,6 +221,14 @@ footer{text-align:center;padding:3rem 1.5rem;font-family:var(--script);font-size
   <div class="wrap">
     <h2>The day</h2>
     <ul class="tl" id="tl"></ul>
+  </div>
+</section>
+
+<section class="gifts" id="gifts">
+  <div class="wrap">
+    <h2>Gift Requests</h2>
+    <p class="gift-intro" id="giftIntro"></p>
+    <ul class="glist" id="glist"></ul>
   </div>
 </section>
 
@@ -226,11 +267,11 @@ footer{text-align:center;padding:3rem 1.5rem;font-family:var(--script);font-size
 const W = {
   name1: "Vasylyna",
   name2: "Richard",
-  date: "2027-06-12T16:00:00",           // YYYY-MM-DDTHH:MM:SS (24h, local time)
+  date: "2027-04-10T16:00:00",           // YYYY-MM-DDTHH:MM:SS (24h, local time)
   ceremony:  { time: "4:00 PM", place: "Willowbrook Gardens", address: "123 Garden Lane, Philadelphia, PA" },
   reception: { time: "6:00 PM", place: "The Grand Hall",      address: "456 Main Street, Philadelphia, PA" },
   dress: "Dress code: garden formal",
-  rsvpBy: "May 1, 2027",
+  rsvpBy: "March 10, 2027",
   schedule: [
     { time: "3:30 PM", title: "Guests arrive", note: "Find a seat and enjoy a welcome drink" },
     { time: "4:00 PM", title: "Ceremony",      note: "Under the willow trees" },
@@ -238,6 +279,14 @@ const W = {
     { time: "6:00 PM", title: "Dinner",        note: "Reception begins at The Grand Hall" },
     { time: "8:00 PM", title: "First dance",   note: "Then the dance floor opens" },
     { time: "11:00 PM", title: "Send-off",     note: "Sparklers and goodnights" }
+  ],
+  giftIntro: "Your presence at our wedding is the greatest gift we could receive. Should you wish to honour us with a gift, we have respectfully compiled the following list of items and contributions. Please note that there is no obligation whatsoever, and we are sincerely grateful for your kindness.",
+  gifts: [   // link is optional: paste a store or registry URL, or leave "" for no button
+    { name: "Honeymoon Fund",           note: "A contribution toward our first journey as a married couple", link: "" },
+    { name: "Home Contribution Fund",   note: "Towards furnishing our new home together",                    link: "" },
+    { name: "Dinnerware Set",           note: "Service for eight, in white porcelain",                       link: "" },
+    { name: "Bed Linens",               note: "Cotton sheet set, white or grey",                             link: "" },
+    { name: "Kitchen Appliances",       note: "A stand mixer or espresso machine",                           link: "" }
   ],
   rsvpEmail: "you@example.com",           // used if no form service below
   formEndpoint: ""                         // optional: paste a Formspree URL to receive RSVPs by email
@@ -252,7 +301,6 @@ const mapUrl = a => "https://www.google.com/maps/search/?api=1&query=" + encodeU
 document.title = `${W.name1} & ${W.name2} – Wedding Invitation`;
 $("n1").textContent = W.name1; $("n2").textContent = W.name2;
 $("cardText").textContent = `${W.name1} & ${W.name2}`;
-$("seal").textContent = W.name1[0] + W.name2[0];
 $("whenLine").textContent = dateLong;
 $("whereLine").textContent = `${W.ceremony.place}, ${W.ceremony.address.split(",").slice(-2).join(",").trim()}`;
 $("cerTime").textContent = W.ceremony.time;   $("recTime").textContent = W.reception.time;
@@ -264,6 +312,11 @@ $("deadline").textContent = `Kindly reply by ${W.rsvpBy}`;
 $("foot").textContent = `${W.name1} & ${W.name2} · ${when.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}`;
 $("tl").innerHTML = W.schedule.map(s =>
   `<li><time>${s.time}</time><h3>${s.title}</h3><p>${s.note}</p></li>`).join("");
+
+$("giftIntro").textContent = W.giftIntro;
+$("glist").innerHTML = W.gifts.map(g =>
+  `<li><div><h3>${g.name}</h3><p>${g.note}</p></div>` +
+  (g.link ? `<a class="link" href="${g.link}" target="_blank" rel="noopener">View item</a>` : "") + `</li>`).join("");
 
 /* Envelope → site */
 const env = $("env"), stage = $("stage");
@@ -349,6 +402,30 @@ $("form").addEventListener("submit", async e => {
   if (ok){ e.target.style.display="none"; $("thanks").classList.add("show"); }
   else alert("Something went wrong sending your RSVP. Please try again or contact us directly.");
 });
+
+/* Lazy, bouncy scroll-follow for the hero (names, date, place, countdown) */
+(function(){
+  if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  const spec = [[".names",.090],["#whenLine",.080],["#whereLine",.070],
+    ["#count div:nth-child(1)",.065],["#count div:nth-child(2)",.060],
+    ["#count div:nth-child(3)",.055],["#count div:nth-child(4)",.050]];
+  const items = [];
+  spec.forEach(([sel,k]) => { const el = document.querySelector(sel); if (el) items.push({el,k,pos:scrollY,vel:0}); });
+  let running = false;
+  function frame(){
+    const t = scrollY; let moving = false;
+    for (const it of items){
+      it.vel = (it.vel + (t - it.pos) * it.k) * .75;
+      it.pos += it.vel;
+      const off = Math.max(-20, Math.min(20, (t - it.pos) * .35));
+      it.el.style.transform = `translateY(${off.toFixed(2)}px)`;
+      if (Math.abs(t - it.pos) > .1 || Math.abs(it.vel) > .1) moving = true;
+    }
+    if (moving) requestAnimationFrame(frame);
+    else { running = false; items.forEach(it => { it.el.style.transform = ""; it.pos = t; it.vel = 0; }); }
+  }
+  addEventListener("scroll", () => { if (!running){ running = true; requestAnimationFrame(frame); } }, {passive:true});
+})();
 </script>
 </body>
 </html>
